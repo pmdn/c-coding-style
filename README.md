@@ -1,6 +1,7 @@
 # Recommended C style and coding rules
 
-This document describes C code style used by Tilen MAJERLE in his projects and libraries.
+This document describes my C coding style.
+
 
 ## Table of Contents
 
@@ -59,15 +60,15 @@ int32_t a = sum (4, 3);             /* Wrong */
 - Never use `__` or `_` prefix for variables/functions/macros/types. This is reserved for C language itself
     - Prefer `prv_` name prefix for strictly module-private functions
 - Use only lowercase characters for variables/functions/macros/types with optional underscore `_` char
-- Opening curly bracket is always at the same line as keyword (`for`, `while`, `do`, `switch`, `if`, ...)
+- Allman style: Opening curly bracket is always at the next line of keyword (`for`, `while`, `do`, `switch`, `if`, ...), except for structs and enums.
 ```c
 size_t i;
-for (i = 0; i < 5; ++i) {           /* OK */
+for (i = 0; i < 5; ++i)             /* OK */
+{
 }
 for (i = 0; i < 5; ++i){            /* Wrong */
 }
-for (i = 0; i < 5; ++i)             /* Wrong */
-{
+for (i = 0; i < 5; ++i) {           /* Wrong */
 }
 ```
 
@@ -103,7 +104,8 @@ my_func(void) {
 - Declare all local variables of the same type in the same line
 ```c
 void
-my_func(void) {
+my_func(void)
+{
     char a;             /* OK */
     char a, b;          /* OK */
     char b;             /* Wrong, variable with char type already exists */
@@ -116,10 +118,11 @@ my_func(void) {
     3. Single/Double floating point
 ```c
 int
-my_func(void) {
+my_func(void)
+{
     /* 1 */
     my_struct_t my;     /* First custom structures */
-    my_struct_ptr_t* p; /* Pointers too */
+    my_struct_ptr_t *p; /* Pointers too */
 
     /* 2 */
     uint32_t a;
@@ -144,12 +147,15 @@ for (size_t i = 0; i < 10; ++i)
 
 /* OK, if you need counter variable later */
 size_t i;
-for (i = 0; i < 10; ++i) {
-    if (...) {
+for (i = 0; i < 10; ++i)
+{
+    if (...)
+    {
         break;
     }
 }
-if (i == 10) {
+if (i == 10)
+{
 
 }
 
@@ -161,7 +167,8 @@ for (i = 0; i < 10; ++i) ...
 - Avoid variable assignment with function call in declaration, except for single variables
 ```c
 void
-a(void) {
+a(void)
+{
     /* Avoid function calls when declaring variable */
     int32_t a, b = sum(1, 2);
 
@@ -189,17 +196,19 @@ bool status = true;
 - Never compare against `true`, eg. `if (check_func() == 1)`, use `if (check_func()) { ... }`
 - Always compare pointers against `NULL` value
 ```c
-void* ptr;
+void *ptr;
 
 /* ... */
 
 /* OK, compare against NULL */
-if (ptr == NULL || ptr != NULL) {
+if (ptr == NULL || ptr != NULL)
+{
 
 }
 
 /* Wrong */
-if (ptr || !ptr) {
+if (ptr || !ptr)
+{
 
 }
 ```
@@ -222,25 +231,29 @@ for (size_t j = 0; j < 10; ++j) {}  /* OK */
 
 /* When d could be modified, data pointed to by d could not be modified */
 void
-my_func(const void* d) {
+my_func(const void* d)
+{
 
 }
 
 /* When d and data pointed to by d both could not be modified */
 void
-my_func(const void* const d) {
+my_func(const void *const d)
+{
 
 }
 
 /* Not required, it is advised */
 void
-my_func(const size_t len) {
+my_func(const size_t len)
+{
 
 }
 
 /* When d should not be modified inside function, only data pointed to by d could be modified */
 void
-my_func(void* const d) {
+my_func(void *const d)
+{
 
 }
 ```
@@ -258,13 +271,15 @@ my_func(void* const d) {
  */
 /* OK example */
 void
-send_data(const void* data, size_t len) { /* OK */
+send_data(const void* data, size_t len)   /* OK */
+{
     /* Do not cast `void *` or `const void *` */
-    const uint8_t* d = data;/* Function handles proper type for internal usage */
+    const uint8_t *d = data;/* Function handles proper type for internal usage */
 }
 
 void
-send_data(const void* data, int len) {    /* Wrong, not not use int */
+send_data(const void *data, int len)      /* Wrong, not not use int */
+{
 }
 ```
 
@@ -275,11 +290,13 @@ send_data(const void* data, int len) {    /* Wrong, not not use int */
 /* OK */
 #include <stdlib.h>
 void
-my_func(size_t size) {
-    int32_t* arr;
+my_func(size_t size)
+{
+    int32_t *arr;
     arr = malloc(sizeof(*arr) * n); /* OK, Allocate memory */
     arr = malloc(sizeof *arr * n);  /* Wrong, brackets for sizeof operator are missing */
-    if (arr == NULL) {
+    if (arr == NULL)
+    {
         /* FAIL, no memory */
     }
 
@@ -288,7 +305,8 @@ my_func(size_t size) {
 
 /* Wrong */
 void
-my_func(size_t size) {
+my_func(size_t size)
+{
     int32_t arr[size];  /* Wrong, do not use VLA */
 }
 ```
@@ -314,11 +332,11 @@ if (is_ok == 0)     /* Wrong, use ! for negative check */
 - Use English names/text for functions, variables, comments
 - Use *lowercase* characters for variables
 - Use *underscore* if variable contains multiple names, eg. `force_redraw`. Do not use `forceRedraw`
-- Never cast function returning `void *`, eg. `uint8_t* ptr = (uint8_t *)func_returning_void_ptr();` as `void *` is safely promoted to any other pointer type
-    - Use `uint8_t* ptr = func_returning_void_ptr();` instead
+- Never cast function returning `void *`, eg. `uint8_t *ptr = (uint8_t *)func_returning_void_ptr();` as `void *` is safely promoted to any other pointer type
+    - Use `uint8_t *ptr = func_returning_void_ptr();` instead
 - Always use `<` and `>` for C Standard Library include files, eg. `#include <stdlib.h>`
 - Always use `""` for custom libraries, eg. `#include "my_library.h"`
-- When casting to pointer type, always align asterisk to type, eg. `uint8_t* t = (uint8_t*)var_width_diff_type`
+- When casting to pointer type, always align asterisk to type, eg. `uint8_t *t = (uint8_t*)var_width_diff_type`
 - Always respect code style already used in project or library
 
 ## Comments
@@ -376,14 +394,14 @@ void MYFunc(void);
 void myFunc();
 ```
 
-- When function returns pointer, align asterisk to return type
+- When function returns pointer, align asterisk to function name
 ```c
 /* OK */
-const char* my_func(void);
-my_struct_t* my_func(int32_t a, int32_t b);
+const char *my_func(void);
+my_struct_t *my_func(int32_t a, int32_t b);
 
 /* Wrong */
-const char *my_func(void);
+const char* my_func(void);
 my_struct_t * my_func(void);
 ```
 - Align all function prototypes (with the same/similar functionality) for better readability
@@ -391,31 +409,42 @@ my_struct_t * my_func(void);
 /* OK, function names aligned */
 void        set(int32_t a);
 my_type_t   get(void);
-my_ptr_t*   get_ptr(void);
+my_ptr_t   *get_ptr(void);
 
 /* Wrong */
 void set(int32_t a);
 const char * get(void);
 ```
 
-- Function implementation must include return type and optional other keywords in separate line
+- Function implementation must include return type and optional other keywords in the same line
 ```c
 /* OK */
-int32_t
-foo(void) {
+int32_t foo(void) 
+{
     return 0;
 }
 
 /* OK */
-static const char*
-get_string(void) {
+static const char *get_string(void)
+{
     return "Hello world!\r\n";
 }
 
 /* Wrong */
-int32_t foo(void) {
+int32_t 
+foo(void)
+{
     return 0;
 }
+```
+
+- When functions have multiple variables, it is a good practice to declare each one of them on a new line
+
+```c
+/* OK. It improves readability */
+void do_something(int32_t a,
+                  int32_t b,
+                  float c);
 ```
 
 ## Variables
@@ -435,8 +464,7 @@ int32_t MYVar;
 
 - Group local variables together by `type`
 ```c
-void
-foo(void) {
+void foo(void) {
     int32_t a, b;   /* OK */
     char a;
     char b;         /* Wrong, char type already exists */
@@ -445,8 +473,7 @@ foo(void) {
 
 - Do not declare variable after first executable statement
 ```c
-void
-foo(void) {
+void foo(void) {
     int32_t a;
     a = bar();
     int32_t b;      /* Wrong, there is already executable statement */
@@ -457,24 +484,25 @@ foo(void) {
 ```c
 int32_t a, b;
 a = foo();
-if (a) {
+if (a)
+{
     int32_t c, d;   /* OK, c and d are in if-statement scope */
     c = foo();
     int32_t e;      /* Wrong, there was already executable statement inside block */
 }
 ```
 
-- Declare pointer variables with asterisk aligned to type
+- Declare pointer variables with asterisk aligned to variable name
 ```c
 /* OK */
-char* a;
+char *a;
 
 /* Wrong */
-char *a;
+char* a;
 char * a;
 ```
 
-- When declaring multiple pointer variables, you may declare them with asterisk aligned to variable name
+- When declaring multiple pointer variables, declare them with asterisk aligned to variable name
 ```c
 /* OK */
 char *p, *n;
@@ -565,9 +593,12 @@ typedef uint8_t (*my_func_typedef_fn)(uint8_t p1, const char* p2);
 - Every compound statement must include single indent; when nesting statements, include `1` indent size for each nest
 ```c
 /* OK */
-if (c) {
+if (c)
+{
     do_a();
-} else {
+}
+else
+{
     do_b();
 }
 
@@ -582,14 +613,19 @@ if (c) do_a();
 else do_b();
 ```
 
-- In case of `if` or `if-else-if` statement, `else` must be in the same line as closing bracket of first statement
+- In case of `if` or `if-else-if` statement, `else` must be in a new line
 ```c
 /* OK */
-if (a) {
+if (a)
+{
 
-} else if (b) {
+}
+else if (b)
+{
 
-} else {
+}
+else
+{
 
 }
 
@@ -611,14 +647,16 @@ else
 }
 ```
 
-- In case of `do-while` statement, `while` part must be in the same line as closing bracket of `do` part
+- In case of `do-while` statement, `while` part must be in the next line of the closing bracket of `do` part
 ```c
 /* OK */
-do {
+do
+{
     int32_t a;
     a = do_a();
     do_b(a);
-} while (check());
+}
+while (check());
 
 /* Wrong */
 do
@@ -631,18 +669,6 @@ do {
 /* ... */
 }
 while (check());
-```
-
-- Indentation is required for every opening bracket
-```c
-if (a) {
-    do_a();
-} else {
-    do_b();
-    if (c) {
-        do_c();
-    }
-}
 ```
 
 - Never do compound statement without curly bracket, even in case of single statement. Examples below show bad practices
@@ -668,7 +694,7 @@ while (is_register_bit_set()) {
 - If `while` (or `for`, `do-while`, etc) is empty (it can be the case in embedded programming), use empty single-line brackets
 ```c
 /* Wait for bit to be set in embedded hardware unit
-uint32_t* addr = HW_PERIPH_REGISTER_ADDR;
+uint32_t *addr = HW_PERIPH_REGISTER_ADDR;
 
 /* Wait bit 13 to be ready */
 while (*addr & (1 << 13)) {}        /* OK, empty loop contains no spaces inside curly brackets */
@@ -684,7 +710,8 @@ while (*addr & (1 << 13));          /* Wrong, curly brackets are missing. Can le
 ```c
 /* Not recommended */
 int32_t a = 0;
-while (a < 10) {
+while (a < 10)
+{
     .
     ..
     ...
@@ -692,13 +719,16 @@ while (a < 10) {
 }
 
 /* Better */
-for (size_t a = 0; a < 10; ++a) {
+for (size_t a = 0; a < 10; ++a)
+{
 
 }
 
 /* Better, if inc may not happen in every cycle */
-for (size_t a = 0; a < 10; ) {
-    if (...) {
+for (size_t a = 0; a < 10; )
+{
+    if (...)
+    {
         ++a;
     }
 }
@@ -711,7 +741,8 @@ for (size_t a = 0; a < 10; ) {
 ```c
 /* OK, every case has single indent */
 /* OK, every break has additional indent */
-switch (check()) {
+switch (check())
+{
     case 0:
         do_a();
         break;
@@ -723,7 +754,8 @@ switch (check()) {
 }
 
 /* Wrong, case indent missing */
-switch (check()) {
+switch (check())
+{
 case 0:
     do_a();
     break;
@@ -735,7 +767,8 @@ default:
 }
 
 /* Wrong */
-switch (check()) {
+switch (check())
+{
     case 0:
         do_a();
     break;      /* Wrong, break must have indent as it is under case */
@@ -750,7 +783,8 @@ switch (check()) {
 - Always include `default` statement
 ```c
 /* OK */
-switch (var) {
+switch (var)
+{
     case 0:
         do_job();
         break;
@@ -759,7 +793,8 @@ switch (var) {
 }
 
 /* Wrong, default is missing */
-switch (var) {
+switch (var)
+{
     case 0:
         do_job();
         break;
@@ -767,11 +802,13 @@ switch (var) {
 ```
 
 - If local variables are required, use curly brackets and put `break` statement inside.
-    - Put opening curly bracket in the same line as `case` statement
+    - Put opening curly bracket in a new line
 ```c
-switch (a) {
+switch (a)
+{
     /* OK */
-    case 0: {
+    case 0:
+    {
         int32_t a, b;
         char c;
         a = 5;
@@ -780,8 +817,7 @@ switch (a) {
     }
 
     /* Wrong */
-    case 1:
-    {
+    case 1: {
         int32_t a;
         break;
     }
@@ -1004,7 +1040,8 @@ typedef enum {
  * \return          Sum of input values
  */
 int32_t
-sum(int32_t a, int32_t b) {
+sum(int32_t a, int32_t b)
+{
     return a + b;
 }
 
@@ -1016,7 +1053,8 @@ sum(int32_t a, int32_t b) {
  * \param[out]      result: Output variable used to save result
  */
 void
-void_sum(int32_t a, int32_t b, int32_t* result) {
+void_sum(int32_t a, int32_t b, int32_t *result)
+{
     *result = a + b;
 }
 ```
@@ -1036,7 +1074,8 @@ typedef enum {
  * \return          \ref MY_OK on success, member of \ref my_enum_t otherwise
  */
 my_enum_t
-check_value(void) {
+check_value(void)
+{
     return MY_OK;
 }
 ```
@@ -1048,8 +1087,8 @@ check_value(void) {
  * \param[in]       in: Input data
  * \return          Pointer to output data on success, `NULL` otherwise
  */
-const void *
-get_data(const void* in) {
+const void *get_data(const void *in)
+{
     return in;
 }
 ```
