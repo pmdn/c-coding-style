@@ -1,6 +1,6 @@
 # Recommended C style and coding rules
 
-This document describes my C coding style.
+This document describes my C coding style. Based on the coding style by MaJerle (https://github.com/MaJerle).
 
 
 ## Table of Contents
