@@ -341,9 +341,9 @@ if (is_ok == 0)     /* Wrong, use ! for negative check */
 
 ## Comments
 
-- Comments starting with `//` are not allowed. Always use `/* comment */`, even for single-line comment
+- Comments starting with `//` are allowed (and preferred) for single-line inline comments
 ```c
-//This is comment (wrong)
+// This is comment (ok)
 /* This is comment (ok) */
 ```
 
@@ -375,8 +375,8 @@ void
 my_func(void) {
     char a, b;
 
-    a = call_func_returning_char_a(a);          /* This is comment with 12*4 spaces indent from beginning of line */
-    b = call_func_returning_char_a_but_func_name_is_very_long(a);   /* This is comment, aligned to 4-spaces indent */
+    a = call_func_returning_char_a(a);          // This is comment with 12*4 spaces indent from beginning of line 
+    b = call_func_returning_char_a_but_func_name_is_very_long(a);   // This is comment, aligned to 4-spaces indent
 }
 ```
 
