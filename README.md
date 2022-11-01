@@ -383,6 +383,7 @@ my_func(void) {
 ## Functions
 
 - Every function which may have access from outside its module, must include function *prototype* (or *declaration*)
+- The parenthesis comes just after the function name, no spaces between
 - Function name must be lowercase, optionally separated with underscore `_` character
 ```c
 /* OK */
@@ -392,6 +393,17 @@ void myfunc(void);
 /* Wrong */
 void MYFunc(void);
 void myFunc();
+```
+
+- Function names must follow this structure: MODULE_OBJECT_ACTION()
+```c
+/* OK */
+void mylib_interface_create(int32_t a, int32_t b);
+void mylib_interface_initialize(void);
+
+/* Wrong */
+void create_interface(int32_t a, int32_t b);
+void init(void);
 ```
 
 - When function returns pointer, align asterisk to function name
@@ -404,6 +416,7 @@ my_struct_t *my_func(int32_t a, int32_t b);
 const char* my_func(void);
 my_struct_t * my_func(void);
 ```
+
 - Align all function prototypes (with the same/similar functionality) for better readability
 ```c
 /* OK, function names aligned */
